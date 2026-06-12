@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashutosh Pati // Space AI Portfolio</title>
+    <style>
+        /* Brutalist Space System Palette */
+        :root {
+            --bg-main: #060608;
+            --text-white: #ffffff;
+            --text-muted: #52525b;
+            --accent-cyan: #00f0ff;
+            --accent-orbit: #3b0764;
+            --grid-line: #14141b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-white);
+            overflow-x: hidden;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* Ambient Space Background Canvas */
+        #space-matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Outer Structural Frame Wrapper */
+        .editorial-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            border: 1px solid var(--grid-line);
+            background: rgba(6, 6, 8, 0.85);
+            backdrop-filter: blur(8px);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Navigation Grid Component */
+        nav {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            border-bottom: 1px solid var(--grid-line);
+        }
+
+        .nav-block {
+            padding: 1.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-block.links {
+            border-left: 1px solid var(--grid-line);
+            display: flex;
+            gap: 2rem;
+            justify-content: flex-end;
+        }
+
+        .nav-block a {
+            color: var(--text-white);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-block a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* --- OVERSIZED HERO SECTION WITH SPACE ELEMENTS --- */
+        .hero-section {
+            padding: 6rem 1.5rem;
+            border-bottom: 1px solid var(--grid-line);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Pure CSS Interactive Spaceship Component */
+        .spaceship-module {
+            position: absolute;
+            top: 3rem;
+            right: 5rem;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .ship-hull {
+            width: 70px;
+            height: 90px;
+            background: linear-gradient(to bottom, #ffffff 40%, #d4d4d8 100%);
+            border: 2px solid #000;
+            border-radius: 50% 50% 20% 20%;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Spaceship Left and Right Thruster Wings */
+        .ship-hull::before, .ship-hull::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            width: 16px;
+            height: 35px;
+            background: #27272a;
+            border: 2px solid #000;
+            z-index: -1;
+        }
+        .ship-hull::before { left: -12px; border-radius: 10px 0 0 5px; transform: rotate(-15deg); }
+        .ship-hull::after { right: -12px; border-radius: 0 10px 5px 0; transform: rotate(15deg); }
+
+        /* Glowing Cockpit / Astronaut Window visor */
+        .visor-window {
+            width: 34px;
+            height: 24px;
+            background: var(--accent-cyan);
+            border: 2px solid #000;
+            border-radius: 12px 12px 6px 6px;
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px var(--accent-cyan);
+            overflow: hidden;
+        }
+
+        .visor-glare {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            animation: visorBlink 4s infinite;
+        }
+
+        @keyframes visorBlink {
+            0%, 90%, 100% { transform: scale(1); }
+            95% { transform: scale(0.1); }
+        }
+
+        /* Engine Fire Animation */
+        .rocket-fire {
+            position: absolute;
+            bottom: -18px;
+            width: 12px;
+            height: 20px;
+            background: linear-gradient(to bottom, #ff7800, transparent);
+            border-radius: 0 0 50% 50%;
+            animation: thrust 0.15s infinite alternate;
+        }
+
+        @keyframes thrust {
+            from { height: 14px; opacity: 0.7; }
+            to { height: 24px; opacity: 1; box-shadow: 0 0 12px #ff4500; }
+        }
+
+        /* Mega Staggered Lettering Layout */
+        .mega-title {
+            font-size: clamp(3.5rem, 9vw, 8rem);
+            font-weight: 900;
+            line-height: 0.85;
+            text-transform: uppercase;
+            letter-spacing: -3px;
+            color: var(--text-white);
+            opacity: 0;
+            transform: translateY(40px);
+            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+            z-index: 2;
+        }
+
+        .mega-title.stagger {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+            padding-left: 10%;
+            margin-top: 0.5rem;
+            animation-delay: 0.2s;
+        }
+
+        @keyframes slideUpFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Statement Banner Row */
+        .statement-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            border-bottom: 1px solid var(--grid-line);
+            background-color: #09090b;
+        }
+
+        .statement-box {
+            padding: 2.5rem 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+
+        .statement-box strong {
+            color: var(--text-white);
+            font-family: monospace;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        /* --- SCROLL reveal MECHANIC STYLES --- */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- ASYMMETRICAL PROJECTS GRID MATRIX --- */
+        .projects-header {
+            padding: 1.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--grid-line);
+        }
+
+        .asymmetric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+
+        .grid-cell {
+            padding: 3.5rem 2rem;
+            border-right: 1px solid var(--grid-line);
+            border-bottom: 1px solid var(--grid-line);
+            transition: background-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 380px;
+            background: rgba(6, 6, 8, 0.5);
+        }
+
+        .grid-cell:nth-child(2n) {
+            border-right: none;
+        }
+
+        .grid-cell:hover {
+            background-color: #0b0b0f;
+        }
+
+        .cell-meta {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        .cell-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .cell-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+        }
+
+        .cell-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: monospace;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--grid-line);
+            padding-top: 1.5rem;
+        }
+
+        .cell-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        /* Footer Info Row */
+        footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 2rem 1.5rem;
+            font-size: 0.8rem;
+            font-family: monospace;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        footer .right-align {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Deep Space Starfield & Ringed Planet Canvas Layer -->
+    <canvas id="space-matrix"></canvas>
+
+    <div class="editorial-container">
+        
+        <!-- Navigation Bar Info Rows -->
+        <nav>
+            <div class="nav-block">Ashutosh Pati // Deep Orbit Telemetry</div>
+            <div class="nav-block links">
+                <a href="https://github.com/YOUR-GITHUB-USERNAME" target="_blank">[GITHUB]</a>
+                <a href="https://www.linkedin.com/in/YOUR-LINKEDIN-USERNAME" target="_blank">[LINKEDIN]</a>
+            </div>
+        </nav>
+
+        <!-- Staggered Brutalist Heading Area -->
+        <header class="hero-section">
+            <!-- Pure CSS Interactive Flying Spaceship Module -->
+            <div class="spaceship-module" id="rocket-pod">
+                <div class="ship-hull">
+                    <div class="visor-window">
+                        <div class="visor-glare"></div>
+                    </div>
+                    <div class="rocket-fire"></div>
+                </div>
+            </div>
+
+            <h1 class="mega-title">Ashutosh</h1>
+            <h1 class="mega-title stagger">Pati.</h1>
+        </header>
+
+        <!-- Horizontal Definition Array Panels -->
+        <section class="statement-bar scroll-reveal">
+            <div class="statement-box">
+                <strong>[01 // SPACE ORBIT DEPLOYMENT]</strong>
+                Building intuitive data systems[cite: 1]. Translating raw unstructured feedback arrays into live, actionable sentiment indices using analytical code layers[cite: 1].
+            </div>
+            <div class="statement-box">
+                <strong>[02 // CORE INFRASTRUCTURE]</strong>
+                B.Tech Computer Science graduate specializing in Python infrastructure, Pandas processing workflows, and generative LLM orchestration[cite: 1].
+            </div>
+        </section>
+
+        <!-- Production Work Grid -->
+        <section>
+            <div class="projects-header">Featured Index // Mission Deployments</div>
+            
+            <div class="asymmetric-grid">
+                
+                <!-- Project Cell 01 -->
+                <div class="grid-cell scroll-reveal">
+                    <div>
+                        <div class="cell-meta">MISSION_01 // NLP PIPELINE</div>
+                        <h3 class="cell-title">E-Commerce Sentiment Engine</h3>
+                        <p class="cell-desc">Extracted raw, unstructured feedback datasets across external marketplaces[cite: 1]. Built cleaning frameworks using Pandas arrays alongside NLTK linguistic processing nodes to isolate consumer opinion signals[cite: 1].</p>
+                    </div>
+                    <div class="cell-footer">
+                        <span>Python, Scrapy, TextBlob</span>
+                        <a href="#" class="cell-link">Launch Specs →</a>
+                    </div>
+                </div>
+
+                <!-- Project Cell 02 -->
+                <div class="grid-cell scroll-reveal">
+                    <div>
+                        <div class="cell-meta">MISSION_02 // AGENT INTEGRATION</div>
+                        <h3 class="cell-title">Intelligent Netflix Application</h3>
+                        <p class="cell-desc">Designed an interface streaming live system parameters via TMDB API arrays, integrating custom ChatGPT conversational endpoints to generate automated recommendation responses[cite: 1].</p>
+                    </div>
+                    <div class="cell-footer">
+                        <span>React, JS, OpenAI API</span>
+                        <a href="#" class="cell-link">Launch Specs →</a>
+                    </div>
+                </div>
+
+                <!-- Project Cell 03 -->
+                <div class="grid-cell scroll-reveal">
+                    <div>
+                        <div class="cell-meta">MISSION_03 // DATA PORTAL</div>
+                        <h3 class="cell-title">Swiggy Live Schema Endpoint</h3>
+                        <p class="cell-desc">Architected functional frontend portals mapping data directly to Swiggy endpoints, parsing real-time menus and customer ratings dynamically into client user interface pipelines[cite: 1].</p>
+                    </div>
+                    <div class="cell-footer">
+                        <span>React, REST Systems</span>
+                        <a href="#" class="cell-link">Launch Specs →</a>
+                    </div>
+                </div>
+
+                <!-- Project Cell 04 -->
+                <div class="grid-cell scroll-reveal">
+                    <div>
+                        <div class="cell-meta">MISSION_04 // LOGISTICS TELEMETRY</div>
+                        <h3 class="cell-title">Core Systems Troubleshooting</h3>
+                        <p class="cell-desc">Handled production telemetry diagnostics and customer ticketing workflows, parsing live distribution parameters inside complex global systems like Galileo and Amadeus[cite: 1].</p>
+                    </div>
+                    <div class="cell-footer">
+                        <span>Concentrix, GDS Tools</span>
+                        <a href="#" class="cell-link">Launch Specs →</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Base Coordinates Footer -->
+        <footer class="scroll-reveal">
+            <div>LOC // Balasore Terminal, IN</div>
+            <div class="right-align">©2026 // ALL CODES DEPLOYED</div>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- 1. SPATIAL INTERACTIVE MOUSE SPACESHIP CONTROLLER ---
+        const rocketPod = document.getElementById('rocket-pod');
+        window.addEventListener('mousemove', (e) => {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            // Calculate distance offset ratios from core monitor midpoint coordinates
+            const trackingX = (e.clientX - centerX) / 25;
+            const trackingY = (e.clientY - centerY) / 25;
+            
+            // Apply fluid spatial translation and matching angular pitch offsets
+            rocketPod.style.transform = `translate(${trackingX}px, ${trackingY}px) rotate(${trackingX * 0.8}deg)`;
+        });
+
+        // --- 2. DEEP COSMOS STARFIELD & ORBITING GAS PLANET CANVAS ENGINE ---
+        const spaceCanvas = document.getElementById('space-matrix');
+        const ctx = spaceCanvas.getContext('2d');
+        let starArray = [];
+        let planetAngle = 0;
+
+        function resizeSpace() {
+            spaceCanvas.width = window.innerWidth;
+            spaceCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeSpace);
+        resizeSpace();
+
+        // Star Blueprint Constructor Class
+        class SpaceStar {
+            constructor() {
+                this.x = Math.random() * spaceCanvas.width;
+                this.y = Math.random() * spaceCanvas.height;
+                this.size = Math.random() * 1.5 + 0.2;
+                this.velocity = Math.random() * 0.3 + 0.05; // Upward crawl velocity indexes
+            }
+            crawl() {
+                this.y -= this.velocity;
+                if (this.y < 0) {
+                    this.y = spaceCanvas.height;
+                    this.x = Math.random() * spaceCanvas.width;
+                }
+            }
+            render() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.3})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initCosmos() {
+            starArray = [];
+            for (let i = 0; i < 90; i++) {
+                starArray.push(new SpaceStar());
+            }
+        }
+
+        function launchCosmosPipeline() {
+            ctx.clearRect(0, 0, spaceCanvas.width, spaceCanvas.height);
+            
+            // A. Run background star crawler arrays
+            starArray.forEach(star => {
+                star.crawl();
+                star.render();
+            });
+
+            // B. Draw Giant Brutalist Ringed Gas Planet (Harshal Aesthetic Match)
+            planetAngle += 0.002;
+            const planetCenterX = spaceCanvas.width * 0.15;
+            const planetCenterY = spaceCanvas.height * 0.75;
+            
+            // Draw Back-half of Planetary Rings first (for depth layering)
+            ctx.strokeStyle = "rgba(0, 240, 255, 0.08)";
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.ellipse(planetCenterX, planetCenterY, 130, 40, Math.PI / -6, Math.PI, 0);
+            ctx.stroke();
+
+            // Draw Core Planet Mass Body sphere
+            ctx.fillStyle = "#0c0c12";
+            ctx.strokeStyle = "rgba(255,255,255,0.03)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(planetCenterX, planetCenterY, 80, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw Front-half of Planetary Rings over core planet sphere body
+            ctx.strokeStyle = "rgba(0, 240, 255, 0.18)";
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.ellipse(planetCenterX, planetCenterY, 130, 40, Math.PI / -6, 0, Math.PI);
+            ctx.stroke();
+
+            requestAnimationFrame(launchCosmosPipeline);
+        }
+
+        // --- 3. INTERSECTION OBSERVER INTERVENTION PIPELINE ---
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => revealObserver.observe(el));
+
+        // Start systems
+        document.addEventListener("DOMContentLoaded", () => {
+            initCosmos();
+            launchCosmosPipeline();
+        });
+    </script>
+</body>
+</html>
